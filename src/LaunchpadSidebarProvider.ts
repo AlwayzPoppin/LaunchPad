@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import { Validator } from './Validator';
 import { Publisher } from './Publisher';
 import { TokenVault } from './TokenVault';
+import { BadgeGenerator } from './BadgeGenerator';
+import * as path from 'path';
 
 export class LaunchpadSidebarProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
@@ -32,6 +34,9 @@ export class LaunchpadSidebarProvider implements vscode.WebviewViewProvider {
                     break;
                 case 'publish':
                     this.runPublish(data.value);
+                    break;
+                case 'generateBadges':
+                    this.runGenerateBadges();
                     break;
                 case 'saveToken':
                     await this._tokenVault.storeToken(data.value);
@@ -78,6 +83,26 @@ export class LaunchpadSidebarProvider implements vscode.WebviewViewProvider {
         });
     }
 
+    private async runGenerateBadges() {
+        if (!vscode.workspace.workspaceFolders) return;
+        const root = vscode.workspace.workspaceFolders[0].uri.fsPath;
+        const packageJsonPath = path.join(root, 'package.json');
+
+        try {
+            const pkg = JSON.parse(require('fs').readFileSync(packageJsonPath, 'utf8'));
+            const badges = BadgeGenerator.generateBadges(pkg.publisher, pkg.name);
+            const success = await BadgeGenerator.insertIntoReadme(root, badges);
+
+            if (success) {
+                vscode.window.showInformationMessage('Marketplace badges inserted into README.md');
+            } else {
+                vscode.window.showWarningMessage('Could not insert badges (README.md missing or badges already present).');
+            }
+        } catch (err) {
+            vscode.window.showErrorMessage('Failed to generate badges: ' + err);
+        }
+    }
+
     private _getHtmlForWebview(webview: vscode.Webview) {
         return `<!DOCTYPE html>
             <html lang="en">
@@ -107,6 +132,7 @@ export class LaunchpadSidebarProvider implements vscode.WebviewViewProvider {
                     <div id="audit-results" style="margin-top: 10px;"></div>
                     
                     <button class="btn btn-secondary" onclick="audit()">Audit Package</button>
+                    <button class="btn btn-secondary" style="margin-top: 4px;" onclick="generateBadges()">Generate Badges</button>
                     
                     <div style="margin-top: 15px; border-top: 1px solid var(--vscode-panel-border); padding-top: 10px;">
                         <div style="font-size: 11px; font-weight: bold; margin-bottom: 5px; display: flex; justify-content: space-between;">
@@ -134,6 +160,10 @@ export class LaunchpadSidebarProvider implements vscode.WebviewViewProvider {
                     
                     function publish(type) {
                         vscode.postMessage({ type: 'publish', value: type });
+                    }
+
+                    function generateBadges() {
+                        vscode.postMessage({ type: 'generateBadges' });
                     }
 
                     function saveToken() {
