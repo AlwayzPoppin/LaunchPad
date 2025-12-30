@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { LaunchpadSidebarProvider } from './LaunchpadSidebarProvider';
 
 export function activate(context: vscode.ExtensionContext) {
-    const sidebarProvider = new LaunchpadSidebarProvider(context.extensionUri);
+    const sidebarProvider = new LaunchpadSidebarProvider(context);
 
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(
