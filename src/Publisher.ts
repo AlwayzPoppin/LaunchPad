@@ -9,7 +9,7 @@ export class Publisher {
         try {
             // In a real scenario, we'd use 'npx vsce publish <type>'
             // For now, let's mock the command to ensure UI feedback works
-            const { stdout, stderr } = await execAsync(`npx vsce publish ${type} --dry-run`, { cwd });
+            const { stdout, stderr } = await execAsync(`npx vsce publish ${type} --no-dependencies`, { cwd });
             if (stderr && !stderr.includes('DONE')) {
                 throw new Error(stderr);
             }
@@ -25,6 +25,15 @@ export class Publisher {
             return stdout.split('\n').filter(l => l.trim() !== '');
         } catch {
             return [];
+        }
+    }
+
+    public static async runCompile(cwd: string): Promise<string> {
+        try {
+            const { stdout } = await execAsync('npm run compile', { cwd });
+            return stdout;
+        } catch (err: any) {
+            throw new Error(`Compile failed: ${err.message}`);
         }
     }
 }

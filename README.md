@@ -1,5 +1,8 @@
 # NexGen-Meta: Launchpad 🚀
 
+![Version](https://img.shields.io/visual-studio-marketplace/v/NexGenSynapse.launchpad) ![Installs](https://img.shields.io/visual-studio-marketplace/i/NexGenSynapse.launchpad) ![Rating](https://img.shields.io/visual-studio-marketplace/r/NexGenSynapse.launchpad)
+
+
 Launchpad is the "Control Center" for VS Code extension developers. It simplifies the final steps of extension delivery—validating your package, managing deployment tokens, and shipping with a single click.
 
 ## Features
