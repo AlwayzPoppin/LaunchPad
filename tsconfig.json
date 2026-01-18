@@ -1,0 +1,18 @@
+{
+    "extends": "../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "out",
+        "rootDir": "src",
+        "baseUrl": ".",
+        "paths": {
+            "@nexgen/shared-core": [
+                "../packages/shared-core"
+            ]
+        }
+    },
+    "exclude": [
+        "node_modules",
+        ".vscode-test",
+        "out"
+    ]
+}

@@ -1,0 +1,15 @@
+node_modules/**
+!node_modules/@nexgen/shared-core/**
+!out/**
+!media/**
+!assets/**
+!package.json
+!LICENSE
+!icon.png
+!media/icon.png
+!media/icon.svg
+!media/ConduitIcon.png
+!media/ExtensionLensIcon.png
+!media/LaunchpadIcon.png
+!ConduitIcon.png
+!media/ConduitIcon.png
